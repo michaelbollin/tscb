@@ -21,7 +21,7 @@ async function fetchAPI(query = "", { variables }: Record<string, any> = {}) {
   const json = await res.json();
   if (json.errors) {
     console.error(json.errors);
-    throw new Error("Failed to fetch API");
+    throw new Error("Failed to fetch API" + json.errors.map((error) => error.message).join("\n"));
   }
   return json.data;
 }
@@ -33,6 +33,7 @@ export async function getPreviewPost(id, idType = "DATABASE_ID") {
       post(id: $id, idType: $idType) {
         databaseId
         slug
+        
         status
       }
     }`,
@@ -69,19 +70,17 @@ export async function getAllPostsForHome(preview) {
             excerpt
             slug
             date
-            featuredImage {
-              node {
-                sourceUrl
+            tags {
+              edges {
+                node {
+                  name
+                }
               }
             }
-            author {
+            username
+             featuredImage {
               node {
-                name
-                firstName
-                lastName
-                avatar {
-                  url
-                }
+                sourceUrl
               }
             }
           }
@@ -96,7 +95,6 @@ export async function getAllPostsForHome(preview) {
       },
     },
   );
-
   return data?.posts;
 }
 
@@ -208,4 +206,52 @@ export async function getPostAndMorePosts(slug, preview, previewData) {
   if (data.posts.edges.length > 2) data.posts.edges.pop();
 
   return data;
+}
+
+
+export async function getPostBySlug(slug: string) {
+  const data = await fetchAPI(
+    `
+    query PostBySlug($id: ID!, $idType: PostIdType!) {
+      post(id: $id, idType: $idType) {
+        title
+        excerpt
+        slug
+        date
+        featuredImage {
+          node {
+            sourceUrl
+          }
+        }
+        author {
+          node {
+            name
+          }
+        }
+        categories {
+          edges {
+            node {
+              name
+            }
+          }
+        }
+        tags {
+          edges {
+            node {
+              name
+            }
+          }
+        }
+        content
+      }
+    }
+  `,
+    {
+      variables: {
+        id: slug,
+        idType: "SLUG"
+      }
+    }
+  );
+  return data?.post;
 }

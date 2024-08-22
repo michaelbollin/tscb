@@ -13,6 +13,7 @@ import PostTitle from "../../components/post-title";
 import Tags from "../../components/tags";
 import { getAllPostsWithSlug, getPostAndMorePosts } from "../../lib/api";
 import { CMS_NAME } from "../../lib/constants";
+import ImagePopup from "@/components/image-popup";
 
 export default function Post({ post, posts, preview }) {
   const router = useRouter();
@@ -22,34 +23,48 @@ export default function Post({ post, posts, preview }) {
     return <ErrorPage statusCode={404} />;
   }
 
+  // Check if the post data is available in the router query
+  const postData = router.query.postData ? JSON.parse(router.query.postData as string) : null;
+
+  // Use the postData if available, otherwise use the fetched post
+  const displayPost = postData || post;
+
+  if (router.isFallback) {
+    return <PostTitle>Loading…</PostTitle>;
+  }
+
   return (
     <Layout preview={preview}>
       <Container>
         <Header />
-        {router.isFallback ? (
-          <PostTitle>Loading…</PostTitle>
+        {router.query.popup === 'true' ? (
+          <ImagePopup
+            post={displayPost}
+            onClose={() => router.push('/', undefined, { shallow: true })}
+            open={true}
+          />
         ) : (
           <>
             <article>
               <Head>
                 <title>
-                  {`${post.title} | Next.js Blog Example with ${CMS_NAME}`}
+                  {`${displayPost.title} | Next.js Blog Example with ${CMS_NAME}`}
                 </title>
                 <meta
                   property="og:image"
-                  content={post.featuredImage?.node.sourceUrl}
+                  content={displayPost.featuredImage?.node.sourceUrl}
                 />
               </Head>
               <PostHeader
-                title={post.title}
-                coverImage={post.featuredImage}
-                date={post.date}
-                author={post.author}
-                categories={post.categories}
+                title={displayPost.title}
+                coverImage={displayPost.featuredImage}
+                date={displayPost.date}
+                author={displayPost.author}
+                categories={displayPost.categories}
               />
-              <PostBody content={post.content} />
+              <PostBody content={displayPost.content} />
               <footer>
-                {post.tags.edges.length > 0 && <Tags tags={post.tags} />}
+                {displayPost.tags.edges.length > 0 && <Tags tags={displayPost.tags} />}
               </footer>
             </article>
 

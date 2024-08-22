@@ -1,38 +1,66 @@
-import Avatar from "./avatar";
-import Date from "./date";
-import CoverImage from "./cover-image";
-import Link from "next/link";
+import { useState } from "react";
+import Date from "@/components/date";
+import CoverImage from "@/components/cover-image";
+import { CalendarIcon, UserIcon } from '@heroicons/react/24/outline'
+import ImagePopup from "@/components/image-popup";
 
 export default function PostPreview({
   title,
   coverImage,
   date,
-  excerpt,
-  author,
   slug,
+  username,
+  excerpt,
+  tags,
 }) {
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handlePopupToggle = (show: boolean) => {
+    setShowPopup(show);
+    if (show) {
+      window.history.pushState({}, '', `/${slug}`);
+    } else {
+      window.history.pushState({}, '', '/');
+    }
+  };
+
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <div className="mb-5">
         {coverImage && (
-          <CoverImage title={title} coverImage={coverImage} slug={slug} />
+          <div onClick={() => handlePopupToggle(true)} className="cursor-pointer">
+            <CoverImage title={title} coverImage={coverImage} slug={slug} excerpt={excerpt} />
+          </div>
         )}
       </div>
-      <h3 className="text-3xl mb-3 leading-snug">
-        <Link
-          href={`/posts/${slug}`}
-          className="hover:underline"
-          dangerouslySetInnerHTML={{ __html: title }}
-        ></Link>
-      </h3>
-      <div className="text-lg mb-4">
-        <Date dateString={date} />
+      <div className="flex flex-col justify-end">
+        <h3 className="text-xl mb-3 leading-snug">
+          <span
+            className="hover:underline cursor-pointer"
+            onClick={() => handlePopupToggle(true)}
+            dangerouslySetInnerHTML={{ __html: title }}
+          ></span>
+        </h3>
+        <div className="text-sm mb-4 text-white/50 flex items-center">
+          <CalendarIcon className="w-4 h-4 mr-2" />
+          <Date dateString={date} />
+          {username && (
+            <>
+              <span className="mx-2">•</span>
+              <UserIcon className="w-4 h-4 mr-2" />
+              <span>{username}</span>
+            </>
+          )}
+        </div>
       </div>
-      <div
-        className="text-lg leading-relaxed mb-4"
-        dangerouslySetInnerHTML={{ __html: excerpt }}
+      <ImagePopup
+        title={title}
+        coverImage={coverImage}
+        tags={tags}
+        excerpt={excerpt}
+        onClose={() => handlePopupToggle(false)}
+        open={showPopup}
       />
-      <Avatar author={author} />
     </div>
   );
 }
