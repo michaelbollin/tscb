@@ -1,6 +1,11 @@
 const API_URL = process.env.WORDPRESS_API_URL;
 
 async function fetchAPI(query = "", { variables }: Record<string, any> = {}) {
+  if (!API_URL) {
+    console.error('WORDPRESS_API_URL is not defined');
+    throw new Error('WORDPRESS_API_URL is not defined');
+  }
+
   const headers = { "Content-Type": "application/json" };
 
   if (process.env.WORDPRESS_AUTH_REFRESH_TOKEN) {
@@ -8,22 +13,26 @@ async function fetchAPI(query = "", { variables }: Record<string, any> = {}) {
       `Bearer ${process.env.WORDPRESS_AUTH_REFRESH_TOKEN}`;
   }
 
-  // WPGraphQL Plugin must be enabled
-  const res = await fetch(API_URL, {
-    headers,
-    method: "POST",
-    body: JSON.stringify({
-      query,
-      variables,
-    }),
-  });
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        query,
+        variables,
+      }),
+    });
 
-  const json = await res.json();
-  if (json.errors) {
-    console.error(json.errors);
-    throw new Error("Failed to fetch API" + json.errors.map((error) => error.message).join("\n"));
+    const json = await res.json();
+    if (json.errors) {
+      console.error('GraphQL Errors:', JSON.stringify(json.errors, null, 2));
+      throw new Error('Failed to fetch API: ' + JSON.stringify(json.errors));
+    }
+    return json.data;
+  } catch (error) {
+    console.error('Error fetching data from WordPress:', error);
+    throw error;
   }
-  return json.data;
 }
 
 export async function getPreviewPost(id, idType = "DATABASE_ID") {
@@ -74,15 +83,24 @@ export async function getAllPostsForHome(preview) {
               edges {
                 node {
                   name
+                  slug
                 }
               }
             }
             username
-             featuredImage {
+            featuredImage {
               node {
                 sourceUrl
               }
             }
+          }
+        }
+      }
+      tags(first: 100) {
+        edges {
+          node {
+            name
+            slug
           }
         }
       }
@@ -93,9 +111,9 @@ export async function getAllPostsForHome(preview) {
         onlyEnabled: !preview,
         preview,
       },
-    },
+    }
   );
-  return data?.posts;
+  return data;
 }
 
 export async function getPostAndMorePosts(slug, preview, previewData) {
@@ -208,6 +226,80 @@ export async function getPostAndMorePosts(slug, preview, previewData) {
   return data;
 }
 
+export async function getPostsByTag(tag: string) {
+  const data = await fetchAPI(
+    `
+    query PostsByTag($tag: String!) {
+      posts(first: 20, where: { tag: $tag }) {
+        edges {
+          node {
+            title
+            excerpt
+            slug
+            date
+            tags {
+              edges {
+                node {
+                  name
+                  slug
+                }
+              }
+            }
+            username
+            featuredImage {
+              node {
+                sourceUrl
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+    {
+      variables: { tag },
+    }
+  );
+  return data.posts;
+}
+
+export async function getPostsByTitle(title: string) {
+  const data = await fetchAPI(`
+    query PostsByTitle($title: String!) {
+      posts(where: { title_contains: $title }, first: 20) {
+        edges {
+          node {
+            title
+            excerpt
+            slug
+            date
+            featuredImage {
+              node {
+                sourceUrl
+              }
+            }
+            author {
+              node {
+                name
+                firstName
+                lastName
+                avatar {
+                  url
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+    {
+      variables: { title },
+    }
+  );
+
+  return data?.posts;
+}
 
 export async function getPostBySlug(slug: string) {
   const data = await fetchAPI(
@@ -218,6 +310,7 @@ export async function getPostBySlug(slug: string) {
         excerpt
         slug
         date
+        username
         featuredImage {
           node {
             sourceUrl
@@ -254,4 +347,50 @@ export async function getPostBySlug(slug: string) {
     }
   );
   return data?.post;
+}
+
+export async function searchPosts(searchTerm: string) {
+  try {
+    const data = await fetchAPI(`
+      query SearchPosts($searchTerm: String!) {
+        posts(
+          first: 20,
+          where: {
+            search: $searchTerm
+            tag: $searchTerm
+          }
+        ) {
+          edges {
+            node {
+              title
+              slug
+              excerpt
+              featuredImage {
+                node {
+                  sourceUrl
+                }
+              }
+              tags {
+                edges {
+                  node {
+                    name
+                    slug
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+      {
+        variables: { searchTerm },
+      }
+    );
+
+    return data?.posts || { edges: [] };
+  } catch (error) {
+    console.error('Error searching posts:', error);
+    return { edges: [] };
+  }
 }

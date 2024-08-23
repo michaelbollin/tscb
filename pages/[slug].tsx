@@ -9,20 +9,20 @@ import ImagePopup from '../components/image-popup';
 import { useRouter } from 'next/router';
 
 
-export default function Index({ post, morePosts, preview }) {
-  console.log('More Posts', morePosts);
+export default function Page({ post, morePosts, preview }) {
   const router = useRouter();
-  const { title, featuredImage, tags, excerpt } = post;
+  const { title, featuredImage, tags, excerpt, username } = post;
   return (
     <Layout preview={preview}>
       <Head>
         <title>{`Next.js Blog Example with ${CMS_NAME}`}</title>
       </Head>
       <Container>
-        {morePosts.edges.length > 0 && <MoreStories posts={morePosts.edges} />}
+        {morePosts?.edges?.length > 0 && <MoreStories posts={morePosts.edges} />}
       </Container>
       <ImagePopup
         title={title}
+        username={username}
         coverImage={featuredImage.node.sourceUrl}
         tags={tags.edges.map((tag) => tag.node.name)}
         excerpt={excerpt}
@@ -36,7 +36,7 @@ export default function Index({ post, morePosts, preview }) {
 export const getStaticProps: GetStaticProps = async ({ params, preview = false }) => {
   const post = await getPostBySlug(params?.slug as string);
   const morePosts = await getAllPostsForHome(preview);
-
+  
   return {
     props: { post, morePosts, preview },
     revalidate: 10,
@@ -45,11 +45,10 @@ export const getStaticProps: GetStaticProps = async ({ params, preview = false }
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const allPosts = await getAllPostsForHome(false);
-  
   return {
-    paths: allPosts.edges.map(({ node }) => ({
+    paths: allPosts?.posts?.edges?.map(({ node }) => ({
       params: { slug: node.slug },
-    })),
+    })) || [],
     fallback: false,
   };
 };

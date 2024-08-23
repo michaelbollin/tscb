@@ -3,36 +3,53 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import Tag from './ui/Tag';
+import { UserIcon } from '@heroicons/react/24/outline';
 
-export default function ImagePopup({ title, coverImage, tags, excerpt, onClose, open }) {
+export default function ImagePopup({
+  title,
+  coverImage,
+  tags,
+  excerpt,
+  onClose,
+  username,
+  open,
+  onTagClick,
+}) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-h-[80vh] sm:max-w-[80vw] bg-black text-white p-0 overflow-hidden">
+      <DialogContent className="max-h-[100vh] sm:h-[80vh] sm:max-w-[80vw] bg-black text-white p-0 overflow-hidden">
         <div className="flex flex-col sm:flex-row h-full">
-          <div className="sm:w-2/3 h-full">
-            <img src={coverImage} alt={title} className="w-full h-full object-cover" />
+          <div className="sm:w-2/3 h-1/2 sm:h-full">
+            <img
+              src={coverImage}
+              alt={title}
+              className="w-2/3 h-full object-cover absolute"
+            />
           </div>
-          <div className="sm:w-1/3 p-6 flex flex-col">
+          <div className="sm:w-1/3 p-6 flex flex-col h-1/2 sm:h-full overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-2xl mb-4" dangerouslySetInnerHTML={{ __html: title }}></DialogTitle>
+              <DialogTitle
+                className="text-2xl mb-2 mt-4"
+                dangerouslySetInnerHTML={{ __html: title }}
+              />
+              <div className="text-sm text-white/50 flex items-center">
+                <UserIcon className="w-4 h-4 mr-1" />
+                <span>{username}</span>
+              </div>
             </DialogHeader>
-            <div className="flex-grow overflow-y-auto">
-              <div className="mb-4">
-                {tags && tags.map((tag, index) => (
-                  <span key={index} className="inline-block bg-gray-700 text-white rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">
-                    {tag}
-                  </span>
-                ))}
+            <div className="mt-4 flex-grow overflow-y-auto">
+              <div className="mb-4 flex flex-wrap gap-2">
+                {tags &&
+                  tags.map((tag, index) => (
+                    <Tag key={index} text={tag} onClick={() => onTagClick(tag)} />
+                  ))}
               </div>
             </div>
-            <Button asChild className="mt-4">
-              <a
-                href={excerpt}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+            <Button variant="ghost" asChild className="mt-4 border-white/50 hover:bg-white/20 hover:text-white border-2">
+              <a href={excerpt} target="_blank" rel="noopener noreferrer">
                 Visit
               </a>
             </Button>

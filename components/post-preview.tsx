@@ -12,6 +12,8 @@ export default function PostPreview({
   username,
   excerpt,
   tags,
+  onTagClick,
+  closePopup,
 }) {
   const [showPopup, setShowPopup] = useState(false);
 
@@ -20,8 +22,13 @@ export default function PostPreview({
     if (show) {
       window.history.pushState({}, '', `/${slug}`);
     } else {
-      window.history.pushState({}, '', '/');
+      closePopup();
     }
+  };
+
+  const handleTagClickWrapper = (tag: string) => {
+    onTagClick(tag);
+    handlePopupToggle(false);
   };
 
   return (
@@ -42,11 +49,8 @@ export default function PostPreview({
           ></span>
         </h3>
         <div className="text-sm mb-4 text-white/50 flex items-center">
-          <CalendarIcon className="w-4 h-4 mr-2" />
-          <Date dateString={date} />
           {username && (
             <>
-              <span className="mx-2">•</span>
               <UserIcon className="w-4 h-4 mr-2" />
               <span>{username}</span>
             </>
@@ -58,8 +62,10 @@ export default function PostPreview({
         coverImage={coverImage}
         tags={tags}
         excerpt={excerpt}
+        username={username}
         onClose={() => handlePopupToggle(false)}
         open={showPopup}
+        onTagClick={handleTagClickWrapper}
       />
     </div>
   );

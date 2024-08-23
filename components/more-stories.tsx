@@ -1,7 +1,6 @@
 import PostPreview from "./post-preview";
 
-export default function MoreStories({ posts }) {
-  console.log('Posts', posts);
+export default function MoreStories({ posts, onTagClick, closePopup }) {
   return (
     <section>
       <div className="grid grid-cols-1 md:grid-cols-4 md:gap-x-4 lg:gap-x-8 gap-y-20 md:gap-y-12 mb-32">
@@ -15,6 +14,8 @@ export default function MoreStories({ posts }) {
               tags={node.tags.edges.map(tag => tag.node.name)}
               username={node.username}
               excerpt={node.excerpt.replace(/<.*?>/g, '')}
+              onTagClick={onTagClick}
+              closePopup={closePopup}
             />
           </div>
         ))}
