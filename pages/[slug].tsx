@@ -11,18 +11,28 @@ import { useRouter } from 'next/router';
 
 export default function Page({ post, morePosts, preview }) {
   const router = useRouter();
+
+  const handleTagClick = (tag: string) => {
+    router.push(`/tag/${tag}`, undefined, { shallow: true });
+  };
+
+  const closePopup = () => {
+    router.push('/');
+  };
+
   const { title, featuredImage, tags, excerpt, username } = post;
   return (
-    <Layout preview={preview}>
+    <Layout preview={preview} onReset={closePopup}>
       <Head>
         <title>{`Next.js Blog Example with ${CMS_NAME}`}</title>
       </Head>
       <Container>
-        {morePosts?.edges?.length > 0 && <MoreStories posts={morePosts.edges} />}
+        {morePosts?.edges?.length > 0 && <MoreStories posts={morePosts.edges} onTagClick={handleTagClick} closePopup={closePopup} />}
       </Container>
       <ImagePopup
         title={title}
         username={username}
+        onTagClick={handleTagClick}
         coverImage={featuredImage.node.sourceUrl}
         tags={tags.edges.map((tag) => tag.node.name)}
         excerpt={excerpt}

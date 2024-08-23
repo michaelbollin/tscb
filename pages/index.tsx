@@ -34,6 +34,10 @@ export default function Index({ initialPosts, allTags, preview, initialTag = '' 
     handleSearch(tagName);
   };
 
+  const handleUserClick = (username: string) => {
+    router.push(`/user/${username}`);
+  };
+
   const closePopup = () => {
     // This function will be passed down to close the popup
     window.history.pushState({}, '', '/');
@@ -46,7 +50,7 @@ export default function Index({ initialPosts, allTags, preview, initialTag = '' 
 
   const handleSearch = async (term: string) => {
     if (term !== searchTerm) {
-      router.push(`/tag/${term}`, undefined, { shallow: true });
+      window.history.pushState({}, '', `/tag/${term}`);
     }
     setSearchTerm(term);
     setShowSuggestions(false);
@@ -120,7 +124,7 @@ export default function Index({ initialPosts, allTags, preview, initialTag = '' 
             ))}
           </div>
         </div>
-        {filteredPosts.length > 0 && <MoreStories posts={filteredPosts} onTagClick={handleTagClick} closePopup={closePopup} />}
+        {filteredPosts.length > 0 && <MoreStories posts={filteredPosts} onUserClick={handleUserClick} onTagClick={handleTagClick} closePopup={closePopup} />}
       </Container>
     </Layout>
   );

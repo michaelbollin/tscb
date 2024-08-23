@@ -13,17 +13,16 @@ export default function PostPreview({
   excerpt,
   tags,
   onTagClick,
+  onUserClick,
   closePopup,
 }) {
   const [showPopup, setShowPopup] = useState(false);
 
   const handlePopupToggle = (show: boolean) => {
     setShowPopup(show);
-    if (show) {
+    if(show)
       window.history.pushState({}, '', `/${slug}`);
-    } else {
-      closePopup();
-    }
+   
   };
 
   const handleTagClickWrapper = (tag: string) => {
@@ -52,7 +51,12 @@ export default function PostPreview({
           {username && (
             <>
               <UserIcon className="w-4 h-4 mr-2" />
-              <span>{username}</span>
+              <span 
+                className="cursor-pointer hover:underline"
+                onClick={() => onUserClick(username)}
+              >
+                {username}
+              </span>
             </>
           )}
         </div>

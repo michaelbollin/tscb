@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Instagram Post Fetcher",
+  "version": "1.0",
+  "description": "Fetches Instagram post details.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.instagram.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}

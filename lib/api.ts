@@ -26,11 +26,13 @@ async function fetchAPI(query = "", { variables }: Record<string, any> = {}) {
     const json = await res.json();
     if (json.errors) {
       console.error('GraphQL Errors:', JSON.stringify(json.errors, null, 2));
-      throw new Error('Failed to fetch API: ' + JSON.stringify(json.errors));
+      console.error('Failed Query:', query);
+      throw new Error(`Failed to fetch API for query: ${query.slice(0, 100)}... | Errors: ${JSON.stringify(json.errors)}`);
     }
     return json.data;
   } catch (error) {
     console.error('Error fetching data from WordPress:', error);
+    console.error('Failed Query:', query);
     throw error;
   }
 }
@@ -87,7 +89,7 @@ export async function getAllPostsForHome(preview) {
                 }
               }
             }
-            username
+            username: customField(key: "username")
             featuredImage {
               node {
                 sourceUrl
@@ -258,6 +260,43 @@ export async function getPostsByTag(tag: string) {
   `,
     {
       variables: { tag },
+    }
+  );
+  return data.posts;
+}
+
+export async function getPostsByUsername(username: string) {
+  const data = await fetchAPI(
+    `
+    query PostsByUsername($username: String!) {
+      posts(first: 20, where: { metaQuery: { metaKey: "username", metaValue: $username } }) {
+        edges {
+          node {
+            title
+            excerpt
+            slug
+            date
+            tags {
+              edges {
+                node {
+                  name
+                  slug
+                }
+              }
+            }
+            username
+            featuredImage {
+              node {
+                sourceUrl
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+    {
+      variables: { username },
     }
   );
   return data.posts;
