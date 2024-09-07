@@ -9,7 +9,7 @@ export default function PostPreview({
   coverImage,
   date,
   slug,
-  username,
+  author,
   excerpt,
   tags,
   onTagClick,
@@ -48,14 +48,14 @@ export default function PostPreview({
           ></span>
         </h3>
         <div className="text-sm mb-4 text-white/50 flex items-center">
-          {username && (
+          {author && (
             <>
               <UserIcon className="w-4 h-4 mr-2" />
               <span 
                 className="cursor-pointer hover:underline"
-                onClick={() => onUserClick(username)}
+                onClick={() => onUserClick(author.node.name)}
               >
-                {username}
+                {author.node.name}
               </span>
             </>
           )}
@@ -66,7 +66,8 @@ export default function PostPreview({
         coverImage={coverImage}
         tags={tags}
         excerpt={excerpt}
-        username={username}
+        author={author}
+        onUserClick={onUserClick}
         onClose={() => handlePopupToggle(false)}
         open={showPopup}
         onTagClick={handleTagClickWrapper}

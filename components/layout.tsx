@@ -3,7 +3,7 @@ import Footer from "./footer";
 import Meta from "./meta";
 import Intro from "./intro";
 
-export default function Layout({ preview, children, onReset }) {
+export default function Layout({ preview, children, onReset }: { preview: boolean, children: React.ReactNode, onReset?: () => void }) {
   return (
     <>
       <Meta />

@@ -12,7 +12,7 @@ export default function MoreStories({ posts, onTagClick, onUserClick, closePopup
               date={node.date}
               slug={node.slug}
               tags={node.tags.edges.map(tag => tag.node.name)}
-              username={node.username}
+              author={node.author}
               excerpt={node.excerpt.replace(/<.*?>/g, '')}
               onTagClick={onTagClick}
               onUserClick={onUserClick}

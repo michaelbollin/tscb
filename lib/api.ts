@@ -89,7 +89,11 @@ export async function getAllPostsForHome(preview) {
                 }
               }
             }
-            username: customField(key: "username")
+            author {
+              node {
+                name
+              }
+            }
             featuredImage {
               node {
                 sourceUrl
@@ -247,7 +251,11 @@ export async function getPostsByTag(tag: string) {
                 }
               }
             }
-            username
+            author {
+              node {
+                name
+              }
+            }
             featuredImage {
               node {
                 sourceUrl
@@ -268,8 +276,8 @@ export async function getPostsByTag(tag: string) {
 export async function getPostsByUsername(username: string) {
   const data = await fetchAPI(
     `
-    query PostsByUsername($username: String!) {
-      posts(first: 20, where: { metaQuery: { metaKey: "username", metaValue: $username } }) {
+    query PostsByAuthor($username: String!) {
+      posts(first: 20, where: { authorName: $username }) {
         edges {
           node {
             title
@@ -284,7 +292,11 @@ export async function getPostsByUsername(username: string) {
                 }
               }
             }
-            username
+            author {
+              node {
+                name
+              }
+            }
             featuredImage {
               node {
                 sourceUrl
@@ -320,11 +332,7 @@ export async function getPostsByTitle(title: string) {
             author {
               node {
                 name
-                firstName
-                lastName
-                avatar {
-                  url
-                }
+               
               }
             }
           }
@@ -349,15 +357,14 @@ export async function getPostBySlug(slug: string) {
         excerpt
         slug
         date
-        username
-        featuredImage {
-          node {
-            sourceUrl
-          }
-        }
         author {
           node {
             name
+          }
+        }
+        featuredImage {
+          node {
+            sourceUrl
           }
         }
         categories {
@@ -417,6 +424,11 @@ export async function searchPosts(searchTerm: string) {
                   }
                 }
               }
+              author {
+                node {
+                  name
+                }
+              }
             }
           }
         }
@@ -432,4 +444,26 @@ export async function searchPosts(searchTerm: string) {
     console.error('Error searching posts:', error);
     return { edges: [] };
   }
+}
+
+export async function getAllUsers() {
+  const data = await fetchAPI(`
+    query AllUsers {
+      users(first: 100) {
+        edges {
+          node {
+            id
+            name
+            slug
+            avatar {
+              url
+            }
+            description
+          }
+        }
+      }
+    }
+  `);
+
+  return data?.users;
 }

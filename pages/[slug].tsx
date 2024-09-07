@@ -16,23 +16,28 @@ export default function Page({ post, morePosts, preview }) {
     router.push(`/tag/${tag}`, undefined, { shallow: true });
   };
 
+  const handleUserClick = (username: string) => {
+    router.push(`/d/${username}`, undefined, { shallow: true });
+  };
+
   const closePopup = () => {
     router.push('/');
   };
 
-  const { title, featuredImage, tags, excerpt, username } = post;
+  const { title, featuredImage, tags, excerpt, author } = post;
   return (
     <Layout preview={preview} onReset={closePopup}>
       <Head>
         <title>{`Next.js Blog Example with ${CMS_NAME}`}</title>
       </Head>
       <Container>
-        {morePosts?.edges?.length > 0 && <MoreStories posts={morePosts.edges} onTagClick={handleTagClick} closePopup={closePopup} />}
+        {morePosts?.edges?.length > 0 && <MoreStories  posts={morePosts.edges} onTagClick={handleTagClick} onUserClick={handleUserClick} closePopup={closePopup} />}
       </Container>
       <ImagePopup
         title={title}
-        username={username}
+        author={author}
         onTagClick={handleTagClick}
+        onUserClick={handleUserClick}
         coverImage={featuredImage.node.sourceUrl}
         tags={tags.edges.map((tag) => tag.node.name)}
         excerpt={excerpt}

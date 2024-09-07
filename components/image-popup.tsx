@@ -14,7 +14,7 @@ export default function ImagePopup({
   tags,
   excerpt,
   onClose,
-  username,
+  author,
   open,
   onTagClick,
   onUserClick,
@@ -40,9 +40,9 @@ export default function ImagePopup({
                 <UserIcon className="w-4 h-4 mr-1" />
                 <span 
                   className="cursor-pointer hover:underline"
-                  onClick={() => onUserClick(username)}
+                  onClick={() => onUserClick(author.node.name)}
                 >
-                  {username}
+                  {author.node.name}
                 </span>
               </div>
             </DialogHeader>
