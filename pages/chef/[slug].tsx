@@ -20,11 +20,13 @@ export default function ChefPage({ user, preview }) {
         <title>{`${name} - Chef Profile | ${CMS_NAME}`}</title>
       </Head>
       <Container>
-        <h1 className="text-4xl md:text-6xl font-playfair">{firstName} {lastName}</h1>
-        <p className="text-gray-400">{name}</p>
-        <div className="flex flex-col md:flex-row gap-8 mt-4">
-          <img className="rounded-xl md:w-1/3" src={userData.avatarPicture.node.sourceUrl} alt={name} />
-          <div className="bio" dangerouslySetInnerHTML={{ __html: description.replace(/\n/g, '<br />') }} />
+        <div className="flex flex-col md:flex-row gap-8 mt-4 items-start">
+          <img className="rounded-xl md:w-1/3 h-auto" src={userData.avatarPicture.node.sourceUrl} alt={name} />
+          <div>
+            <h1 className="text-4xl md:text-6xl font-playfair">{firstName} {lastName}</h1>
+            <p className="text-gray-400">{name}</p>
+            <div className="bio mt-10" dangerouslySetInnerHTML={{ __html: description.replace(/\n/g, '<br />') }} />
+          </div>
         </div>
       </Container>
     </Layout>

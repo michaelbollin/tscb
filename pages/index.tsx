@@ -77,8 +77,8 @@ export default function Index({ initialPosts, allTags, preview, initialTag = '' 
         <title>{`${searchTerm || 'Home'} | ${CMS_NAME}`}</title>
       </Head>
       <Container>
-        <h1 className="text-4xl md:text-6xl lg:text-6xl mb-10 font-playfair font-normal bg-gradient-to-r from-gray-200 to-gray-600 text-transparent bg-clip-text text-center md:text-left">
-          Dishes to adore, from web chefs
+        <h1 className="text-4xl md:text-4xl lg:text-4xl mb-10 font-playfair font-normal bg-gradient-to-r from-gray-200 to-gray-600 text-transparent bg-clip-text text-center md:text-left leading-[3rem]">
+          Dishes to adore, from web wizard chefs
         </h1>
 
         {filteredPosts.length > 0 && <MoreStories posts={filteredPosts} onUserClick={handleUserClick} onTagClick={handleTagClick} closePopup={closePopup} />}
