@@ -28,7 +28,7 @@ export default function Page({ post, morePosts, preview }) {
   return (
     <Layout preview={preview} onReset={closePopup}>
       <Head>
-        <title>{`Next.js Blog Example with ${CMS_NAME}`}</title>
+        <title>{`${title} | Tiny Shiny Cook Book`}</title>
       </Head>
       <Container>
         {morePosts?.edges?.length > 0 && <MoreStories  posts={morePosts.edges} onTagClick={handleTagClick} onUserClick={handleUserClick} closePopup={closePopup} />}

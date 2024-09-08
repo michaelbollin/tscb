@@ -74,7 +74,8 @@ export default function Index({ initialPosts, allTags, preview, initialTag = '' 
   return (
     <Layout preview={preview} onReset={resetAll}>
       <Head>
-        <title>{`${searchTerm || 'Home'} | ${CMS_NAME}`}</title>
+        <title>{`${searchTerm || 'Tiny Shiny Cook Book - curated dishes from web chefs'}`}</title>
+        <meta name="description" content="Curated dishes from chefs, home cooks and bloggers, presented with grace and style." />
       </Head>
       <Container>
         <h1 className="text-4xl md:text-4xl lg:text-4xl mb-10 font-playfair font-normal bg-gradient-to-r from-gray-200 to-gray-600 text-transparent bg-clip-text text-center md:text-left !leading-[3rem]">

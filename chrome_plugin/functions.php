@@ -431,6 +431,18 @@ function handle_draft_post_creation(WP_REST_Request $request)
 
 	$post_id = wp_insert_post($new_post);
 
+	if (!is_wp_error($post_id)) {
+        $to = 'michael@bollin.pl'; // Replace with the recipient's email address
+        $subject = 'New Draft Post Created';
+        $message = "A new draft post has been created:\n\n";
+        $message .= "Title: $title\n";
+        $message .= "Author: $author\n";
+        $message .= "URL: $url\n";
+        $message .= "Post ID: $post_id\n";
+
+        wp_mail($to, $subject, $message);
+    }
+
 	// Upload the image from the URL and get the attachment ID
 	$image_id = upload_image_from_url($image, $post_id);
 
