@@ -77,7 +77,7 @@ export default function Index({ initialPosts, allTags, preview, initialTag = '' 
         <title>{`${searchTerm || 'Home'} | ${CMS_NAME}`}</title>
       </Head>
       <Container>
-        <h1 className="text-4xl md:text-6xl lg:text-6xl mb-10 font-playfair font-normal bg-gradient-to-r from-gray-200 to-black text-transparent bg-clip-text text-center md:text-left">
+        <h1 className="text-4xl md:text-6xl lg:text-6xl mb-10 font-playfair font-normal bg-gradient-to-r from-gray-200 to-gray-600 text-transparent bg-clip-text text-center md:text-left">
           Dishes to adore, from web chefs
         </h1>
 

@@ -454,16 +454,83 @@ export async function getAllUsers() {
           node {
             id
             name
+            firstName
+            lastName
             slug
             avatar {
               url
             }
             description
+            userData {
+          	  favouriteDish
+              avatarPicture {
+                node {
+                  id
+                  sourceUrl
+                }
+              }
+          	}
           }
         }
       }
     }
   `);
 
-  return data?.users;
+  console.log(data.users.edges);
+
+  // Filter out users without a description and without published posts
+  const usersWithBioAndPosts = data?.users?.edges.filter(
+    (edge) => 
+      edge.node.description && 
+      edge.node.description.trim() !== ''
+  ) || [];
+
+  return { edges: usersWithBioAndPosts };
+}
+
+export async function getUserBySlug(slug: string) {
+  const data = await fetchAPI(`
+    query UserBySlug($slug: String!) {
+      user(id: $slug, idType: USERNAME) {
+        id
+        username
+        name
+        email
+        description
+        avatar {
+          url
+        }
+      }
+    }
+  `, {
+    variables: {
+      slug: slug
+    }
+  });
+
+  return data?.user;
+}
+
+export async function getUserById(id: string) {
+  const data = await fetchAPI(`
+    query UserById($id: ID!) {
+      user(id: $id, idType: DATABASE_ID) {
+        id
+        username
+        name
+        email
+        description
+        avatar {
+          url
+        }
+        slug
+      }
+    }
+  `, {
+    variables: {
+      id: id
+    }
+  });
+
+  return data?.user;
 }
