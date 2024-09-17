@@ -36,7 +36,7 @@ export default function ImagePopup({
                 className="text-2xl mb-2 mt-4"
                 dangerouslySetInnerHTML={{ __html: title }}
               />
-              <div className="text-sm text-white/50 flex items-center">
+              <div className="text-sm text-white/80 flex items-center">
                 <UserIcon className="w-4 h-4 mr-1" />
                 <span 
                   className="cursor-pointer hover:underline"
