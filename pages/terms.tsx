@@ -26,9 +26,20 @@ const TermsOfUse: React.FC = () => {
           By accessing this website, you agree to be bound by these terms and conditions. If you do not agree to any part of these terms, please do not use our website.
         </p>
 
-        <h2 className="text-2xl font-semibold mt-6 mb-4">1. License</h2>
+        <h2 className="text-2xl font-semibold mt-6 mb-4">1. Intellectual Property Rights</h2>
         <p className="mb-4">
-          Unless otherwise stated, Tiny Shiny Cook Book and/or its licensors own the intellectual property rights for all material on Tiny Shiny Cook Book. All intellectual property rights are reserved. You may access this from Tiny Shiny Cook Book for your own personal use, subject to restrictions set in these terms and conditions.
+          The content on Tiny Shiny Cook Book falls into two categories:
+        </p>
+        <ol className="list-decimal pl-8 mb-4">
+          <li className="mb-2">
+            <strong>User-submitted content:</strong> Users retain the intellectual property rights for all content they submit to Tiny Shiny Cook Book. By submitting content, users grant Tiny Shiny Cook Book a non-exclusive license to use, publish, and distribute their content on our platform and related services.
+          </li>
+          <li className="mb-2">
+            <strong>Website content:</strong> Unless otherwise stated, Tiny Shiny Cook Book owns the intellectual property rights for all other material on the website, including but not limited to the design, layout, and functionality.
+          </li>
+        </ol>
+        <p className="mb-4">
+          All content on Tiny Shiny Cook Book is subject to the restrictions set in these terms and conditions.
         </p>
 
         <p className="mb-4">You must not:</p>
